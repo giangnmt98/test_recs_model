@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 from typing import Optional
 
@@ -5,7 +6,6 @@ from lightning_fabric.utilities.types import _PATH
 from pytorch_lightning.callbacks import ModelCheckpoint
 
 from recmodel.base.utils.mlflow import MLflowMaster
-import os
 
 
 class CustomModelCheckpiont(ModelCheckpoint):
