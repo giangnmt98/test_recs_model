@@ -9,10 +9,10 @@ venv:
 	${PYTHON} -m venv ${VENV_NAME} && \
 	source ${VENV_NAME}/bin/activate && \
 	${PYTHON} -m pip install pip setuptools wheel && \
-	${PYTHON} -m pip install \
-		--extra-index-url=https://pypi.nvidia.com \
-		cudf-cu12==23.8.* cuml-cu12==23.8.* && \
-	${PYTHON} -m pip install -e .[dev] && \
+#	${PYTHON} -m pip install \
+#		--extra-index-url=https://pypi.nvidia.com \
+#		cudf-cu12==23.8.* cuml-cu12==23.8.* && \
+	${PYTHON} -m pip install --extra-index-url https://pypi.nvidia.com -e .[dev] && \
 	pre-commit install
 
 # Style

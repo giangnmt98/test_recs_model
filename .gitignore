@@ -113,7 +113,7 @@ mytv_etl_env/
 *.html
 
 # data
-data
+
 !tests/data/
 tests/data/features
 
