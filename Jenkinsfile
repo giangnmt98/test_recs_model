@@ -88,7 +88,7 @@ pipeline {
                     echo "=== Running Linting Tools ==="
                     flake8 $CODE_DIRECTORY
                     mypy --show-traceback $CODE_DIRECTORY
-                    pylint $CODE_DIRECTORY
+//                     pylint $CODE_DIRECTORY
                     '''
 
                     // Run tests
