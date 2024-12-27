@@ -65,7 +65,7 @@ pipeline {
             agent {
                 docker {
                     image 'ubuntu22.04_python39_cuda12.2'
-                    args '--gpus all -u root'
+                    args '--gpus all -u giang'
                 }
             }
 
