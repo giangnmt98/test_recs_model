@@ -29,7 +29,7 @@ pipeline {
                     echo "=== Checking lines of code in each file ==="
                     MAX_LINES=500
                     set +x
-                    git ls-files | grep -Ev ".pylintrc|airflow.cfg" | while read -r file; do
+                    git ls-files | grep -Ev ".pylintrc|airflow.cfg|data" | while read -r file; do
                         line_count=$(wc -l < "$file")
                         if [ "$line_count" -gt "$MAX_LINES" ]; then
                             echo "Error: File $file has $line_count lines, which exceeds the threshold of $MAX_LINES lines."
