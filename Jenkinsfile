@@ -65,7 +65,7 @@ pipeline {
             agent {
                 docker {
                     image 'ubuntu22.04_python39_cuda12.2'
-                    args '--gpus all'
+                    args '--gpus all -u root'
                 }
             }
 
@@ -92,6 +92,7 @@ pipeline {
                     // Run tests
                     sh '''
                     echo "=== Running Tests ==="
+                    chmod -R 777 tests
                     pytest -s --durations=0 --disable-warnings tests/
                     '''
 
