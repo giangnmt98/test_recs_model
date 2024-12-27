@@ -80,7 +80,7 @@ pipeline {
                     nvidia-smi
                     nvcc -V
                     echo "=== Setting up Python environment ==="
-                    python3 -m pip install -e .[dev]
+                    python3 -m pip install --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 
                     // Run linting
