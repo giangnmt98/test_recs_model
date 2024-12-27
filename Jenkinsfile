@@ -93,10 +93,8 @@ pipeline {
                     sh '''
                     echo "=== Running Tests ==="
                     chmod -R u+rw recmodel
-                    mkdir ./tmp
-                    cp -r recmodel  ./tmp
-                    ls -la
-//                     pytest -s --durations=0 --disable-warnings tests/
+
+                    ls -la recmodel
                     '''
 
                     // Run main application
