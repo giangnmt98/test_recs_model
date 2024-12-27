@@ -95,7 +95,7 @@ pipeline {
                      rm -rf recmodel/*pycache*
                      ls -la recmodel
                      chown -R root:root .
-                     pytest -s --durations=0 --disable-warnings tests/
+                     python3 -B -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
                     // Run main application
