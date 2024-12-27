@@ -76,11 +76,11 @@ pipeline {
             steps {
                 script {
                     // Set up Python environment once
-//                     sh '''
-//                     chmod -R 777 /var/jenkins_home/pip_cache
-//                     echo "=== Setting up Python environment ==="
-//                     python3 -m pip install --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
-//                     '''
+                    sh '''
+                    chmod -R 777 /var/jenkins_home/pip_cache
+                    echo "=== Setting up Python environment ==="
+                    python3 -m pip install --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
+                    '''
 //
 //                     // Run linting
 //                     sh '''
@@ -91,11 +91,9 @@ pipeline {
 
                     // Run tests
                     sh '''
-                    echo "=== Running Tests ==="
-                    chmod -R u+rw recmodel
-
-                    ls -la recmodel
-                    rm -rf recmodel/*pycache*
+                     echo "=== Running Tests ==="
+                     rm -rf recmodel/*pycache*
+                     pytest -s --durations=0 --disable-warnings tests/
                     '''
 
                     // Run main application
