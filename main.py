@@ -18,7 +18,6 @@ if __name__ == "__main__":
         help="Path to the configuration file",
     )
     args = parser.parse_args()
-
     config = load_simple_dict_config(args.config_path)
     model_name = config["model_name"]
 
