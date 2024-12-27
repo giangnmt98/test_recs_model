@@ -93,6 +93,7 @@ pipeline {
                     // Run tests
                     sh '''
                     echo "=== Running Tests ==="
+                    chmod -R 700 ./lightning_logs
                     pytest -s --durations=0 --disable-warnings tests/
                     '''
 
