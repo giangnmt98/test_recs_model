@@ -93,6 +93,7 @@ pipeline {
                     sh '''
                     echo "=== Running Tests ==="
                     chown -R root:root .
+                    chmod -R 777 /tmp
                     ls -la
                     pytest -s --durations=0 --disable-warnings tests/
                     '''
