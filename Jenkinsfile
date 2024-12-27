@@ -77,8 +77,7 @@ pipeline {
                 script {
                     // Set up Python environment once
                     sh '''
-                    nvidia-smi
-                    nvcc -V
+                    chmod -R 777 /var/jenkins_home/pip_cache
                     echo "=== Setting up Python environment ==="
                     python3 -m pip install --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
