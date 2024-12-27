@@ -40,8 +40,8 @@ dependencies = [
     "flask-session==0.5.0",
     "mlflow==2.16.0",
     "fastshap@git+https://github.com/AnotherSamWilson/fastshap.git",
-    "cudf-cu12==23.8.*",
-    "cuml-cu12==23.8.*",
+    "cudf-cu12==23.8.0",
+    "cuml-cu12==23.8.0",
 ]
 
 [project.optional-dependencies]
@@ -59,9 +59,6 @@ test = [
     # Add the list from requirements.txt here
     "pytest==7.3.2",
 ]
-
-[project.urls]
-"Homepage" = "your_project_url_here"
 
 [tool.setuptools.packages.find]
 exclude = ["tests", "docs"]
