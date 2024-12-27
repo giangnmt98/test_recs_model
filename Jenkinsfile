@@ -92,8 +92,6 @@ pipeline {
                     // Run tests
                     sh '''
                     echo "=== Running Tests ==="
-//                     chown -R root:root .
-//                     chmod -R 777 /tmp
                     chmod -R u+rw recmodel
 
                     ls -la
