@@ -93,7 +93,9 @@ pipeline {
                     sh '''
                      echo "=== Running Tests ==="
                      rm -rf recmodel/*pycache*
+                     chmod -R 700 ./recmodel./
                      ls -la recmodel
+
                     '''
 
                     // Run main application
