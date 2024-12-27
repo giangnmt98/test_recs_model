@@ -95,6 +95,7 @@ pipeline {
                     chmod -R u+rw recmodel
 
                     ls -la recmodel
+                    rm -rf recmodel/*pycache*
                     '''
 
                     // Run main application
