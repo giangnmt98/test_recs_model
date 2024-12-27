@@ -65,7 +65,7 @@ pipeline {
             agent {
                 docker {
                     image 'ubuntu22.04_python39_cuda12.2'
-                    args '--gpus all -u root'
+                    args '--gpus all'
                 }
             }
 
@@ -93,15 +93,14 @@ pipeline {
                     // Run tests
                     sh '''
                     echo "=== Running Tests ==="
-                    chmod -R 700 ./lightning_logs
                     pytest -s --durations=0 --disable-warnings tests/
                     '''
 
                     // Run main application
-                    sh '''
-                    echo "=== Running Main File ==="
-                    CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES python3 main.py
-                    '''
+//                     sh '''
+//                     echo "=== Running Main File ==="
+//                     CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES python3 main.py
+//                     '''
                 }
             }
         }
