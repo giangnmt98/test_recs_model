@@ -93,7 +93,7 @@ pipeline {
                     sh '''
                     echo "=== Running Tests ==="
                     chmod -R 777 tests
-                    ls
+                    ls -la
                     pytest -s --durations=0 --disable-warnings tests/
                     '''
 
