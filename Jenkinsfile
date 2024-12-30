@@ -65,7 +65,7 @@ pipeline {
             agent {
                 docker {
                     image 'test'
-                    args '--gpus all'
+                    args '--gpus all -u root'
                 }
             }
 
@@ -94,6 +94,7 @@ pipeline {
                     sh '''
                      echo "=== Running Tests ==="
                      . venv/bin/activate
+                     chmod -R 777 recmodel
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
