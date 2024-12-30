@@ -77,12 +77,10 @@ pipeline {
                 script {
                     // Set up Python environment once
                     sh '''
-                    export PATH="/opt/conda/bin:$PATH"
                     echo "=== Setting up Python environment ==="
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    python3 --version
-                    python3 -m pip install  --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
+                    export PATH="/opt/conda/bin:$PATH"
+                    conda activate py3.9
+                    python3 -m pip install  --cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 //
 //                     // Run linting
@@ -95,7 +93,8 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
-                     . venv/bin/activate
+                     export PATH="/opt/conda/bin:$PATH"
+                     conda activate py3.9
                      python3 -B -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
