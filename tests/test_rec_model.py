@@ -78,27 +78,27 @@ class TestDailyPipeline:
             else:
                 shutil.rmtree(f, ignore_errors=True)
 
-#
-# @pytest.fixture(scope="session", autouse=True)
-# def cleanup(request):
-#     """Cleanup a testing directory once we are finished."""
-#
-#     def remove_test_dir():
-#         paths = [
-#             "experiments/",
-#             "lightning_logs/",
-#             "model_configs/",
-#             "mlruns.db",
-#             "mlruns/",
-#         ]
-#         import os
-#
-#         for f in paths:
-#             if "/" not in f and os.path.exists(f):
-#                 os.remove(f)
-#             else:
-#                 shutil.rmtree(
-#                     f"{os.path.dirname(os.path.realpath(__file__))}/{f}", ignore_errors=True
-#                 )
-#
-#     request.addfinalizer(remove_test_dir)
+
+@pytest.fixture(scope="session", autouse=True)
+def cleanup(request):
+    """Cleanup a testing directory once we are finished."""
+
+    def remove_test_dir():
+        paths = [
+            "experiments/",
+            "lightning_logs/",
+            "model_configs/",
+            "mlruns.db",
+            "mlruns/",
+        ]
+        import os
+
+        for f in paths:
+            if "/" not in f and os.path.exists(f):
+                os.remove(f)
+            else:
+                shutil.rmtree(
+                    f"{os.path.dirname(os.path.realpath(__file__))}/{f}", ignore_errors=True
+                )
+
+    request.addfinalizer(remove_test_dir)

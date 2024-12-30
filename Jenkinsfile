@@ -98,6 +98,7 @@ pipeline {
                      chown -R $(id -u):$(id -g) recmodel
                      mkdir recmodel_clean
                      rsync -av --exclude-from='.mlflowignore' recmodel/ recmodel_clean/
+                     ls -la recmodel
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
