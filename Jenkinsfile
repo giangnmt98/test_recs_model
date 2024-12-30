@@ -78,6 +78,8 @@ pipeline {
                     // Set up Python environment once
                     sh '''
                     echo "=== Setting up Python environment ==="
+                    conda env list
+                    conda activate py39
                     python3 -m pip install  --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 //
