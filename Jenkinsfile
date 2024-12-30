@@ -79,6 +79,7 @@ pipeline {
                     sh '''
                     echo "=== Setting up Python environment ==="
                     export PATH="/opt/conda/bin:$PATH"
+                    . /opt/conda/etc/profile.d/conda.sh
                     conda activate py3.9
                     python3 -m pip install  --cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
@@ -94,6 +95,7 @@ pipeline {
                     sh '''
                      echo "=== Running Tests ==="
                      export PATH="/opt/conda/bin:$PATH"
+                     . /opt/conda/etc/profile.d/conda.sh
                      conda activate py3.9
                      python3 -B -m pytest -s --durations=0 --disable-warnings tests/
                     '''
