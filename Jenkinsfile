@@ -92,9 +92,8 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
-                     rm -rf recmodel/*pycache*
-                     ls -la recmodel
-                     chown -R root:root .
+
+
                      python3 -B -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
