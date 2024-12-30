@@ -65,7 +65,7 @@ pipeline {
             agent {
                 docker {
                     image 'ubuntu22.04_python39_cuda12.2'
-                    args '--gpus all -u 1000:1000'
+                    args '--gpus all'
                 }
             }
 
@@ -77,11 +77,8 @@ pipeline {
                 script {
                     // Set up Python environment once
                     sh '''
-                    chown -R 1000:1000 .
                     echo "=== Setting up Python environment ==="
-                    ls -ld /.local
-                    chown -R 1000:1000 /.local
-                    python3 -m pip install --user --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
+                    python3 -m pip install  --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 //
 //                     // Run linting
@@ -94,8 +91,6 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
-                     chown -R 1000:1000
-                     ls -la recmodel
                      python3 -B -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
