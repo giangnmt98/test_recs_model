@@ -78,6 +78,8 @@ pipeline {
                     // Set up Python environment once
                     sh '''
                     echo "=== Setting up Python environment ==="
+                    python3 -m venv /workspace/venv
+                    . venv/bin/activate
                     python3 -m pip install --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 //
@@ -91,6 +93,7 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
+                     . venv/bin/activate
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
