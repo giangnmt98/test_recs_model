@@ -97,6 +97,7 @@ pipeline {
                      chmod -R 777 recmodel
                      chown -R $(id -u):$(id -g) recmodel
                      ls -la recmodel
+                     export MLFLOW_TRACKING_LOG_LEVEL=DEBUG
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
