@@ -64,7 +64,7 @@ pipeline {
         stage('Setup and Run Pipeline') {
             agent {
                 docker {
-                    image 'ubuntu22.04_python39_cuda12.2'
+                    image 'test'
                     args '--gpus all --user 1000:1000'
                 }
             }
@@ -78,6 +78,7 @@ pipeline {
                     // Set up Python environment once
                     sh '''
                     echo "=== Setting up Python environment ==="
+                    python3 --version
                     python3 -m pip install  --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 //
