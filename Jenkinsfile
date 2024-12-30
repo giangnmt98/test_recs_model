@@ -98,6 +98,7 @@ pipeline {
                      chown -R $(id -u):$(id -g) recmodel
                      ls -la recmodel
                      export MLFLOW_TRACKING_LOG_LEVEL=DEBUG
+                     cp -R recmodel /tmp/recmodel_test
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
