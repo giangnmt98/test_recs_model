@@ -95,7 +95,7 @@ pipeline {
                      echo "=== Running Tests ==="
                      . venv/bin/activate
                      chmod -R 777 recmodel
-                     mlflow run --no-conda --uid=0
+                     mlflow run  --uid=0
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
