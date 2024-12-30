@@ -96,6 +96,8 @@ pipeline {
                      . venv/bin/activate
                      chmod -R 777 recmodel
                      chown -R $(id -u):$(id -g) recmodel
+                     mkdir recmodel_clean
+                     rsync -av --exclude-from='.mlflowignore' recmodel/ recmodel_clean/
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
