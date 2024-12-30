@@ -78,9 +78,9 @@ pipeline {
                     // Set up Python environment once
                     sh '''
                     export PATH="/opt/conda/bin:$PATH"
-                    echo "=== Setting up Python environment ==="\
-                    conda activate py3.9
+                    echo "=== Setting up Python environment ==="
                     python3 -m venv venv
+                    python3 --version
                     . venv/bin/activate
                     python3 -m pip install  --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
