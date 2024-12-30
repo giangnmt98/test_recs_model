@@ -95,8 +95,8 @@ pipeline {
                      echo "=== Running Tests ==="
                      . venv/bin/activate
                      find recmodel ! -readable -exec ls -ld {} \;
-
-                     python3 -m pytest -s --durations=0 --disable-warnings tests/
+                     export MLFLOW_TRACKING_LOG_LEVEL=DEBUG
+                     python3 -m pytest -s --durations=0 --disable-warnings --log-cli-level=DEBUG  tests/
                     '''
 
                     // Run main application
