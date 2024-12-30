@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    options {
-        disableConcurrentBuilds()
-    }
     environment {
         CODE_DIRECTORY = 'recmodel'
         CUDA_VISIBLE_DEVICES = '0'
