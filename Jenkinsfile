@@ -65,7 +65,7 @@ pipeline {
             agent {
                 docker {
                     image 'test'
-                    args '--gpus all --user 1000:1000'
+                    args '--gpus all -v $WORKSPACE:/workspace --workdir /workspace'
                 }
             }
 
@@ -78,8 +78,8 @@ pipeline {
                     // Set up Python environment once
                     sh '''
                     echo "=== Setting up Python environment ==="
-                    python3 --version
-                    python3 -m pip install  --user --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
+                    chmod -R 777 /workspace
+                    python3 -m pip install --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 //
 //                     // Run linting
