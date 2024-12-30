@@ -94,12 +94,8 @@ pipeline {
                     sh '''
                      echo "=== Running Tests ==="
                      . venv/bin/activate
-                     chown -R root:root recmodel
-                     chmod -R 755 recmodel
+                     find recmodel ! -readable -exec ls -ld {} \;
 
-                     ls -la recmodel
-                     export MLFLOW_TRACKING_LOG_LEVEL=DEBUG
-                     cp -R recmodel /tmp/recmodel_test
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
