@@ -97,6 +97,7 @@ pipeline {
                      chmod -R 777 recmodel
                      chown -R $(id -u):$(id -g) recmodel
                      mkdir recmodel_clean
+                     apt install -y rsync
                      rsync -av --exclude-from='.mlflowignore' recmodel/ recmodel_clean/
                      ls -la recmodel
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
