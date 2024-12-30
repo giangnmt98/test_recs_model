@@ -65,7 +65,7 @@ pipeline {
             agent {
                 docker {
                     image 'ubuntu22.04_python39_cuda12.2'
-                    args '--gpus all'
+                    args '--gpus all -u root:root'
                 }
             }
 
@@ -80,9 +80,8 @@ pipeline {
                     echo "=== Setting up Python environment ==="
                     export PATH="/opt/conda/bin:$PATH"
                     . /opt/conda/etc/profile.d/conda.sh
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    python3 -m pip install  --cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
+                    conda activate py3.9
+                    python3 -m pip install  --user --cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 //
 //                     // Run linting
@@ -95,7 +94,9 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
-                     . venv/bin/activate
+                     export PATH="/opt/conda/bin:$PATH"
+                     . /opt/conda/etc/profile.d/conda.sh
+                     conda activate py3.9
                      python3 -B -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
