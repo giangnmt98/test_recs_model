@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    options {
+        disableConcurrentBuilds()
+    }
     environment {
         CODE_DIRECTORY = 'recmodel'
         CUDA_VISIBLE_DEVICES = '0'
@@ -65,7 +67,7 @@ pipeline {
             agent {
                 docker {
                     image 'ubuntu22.04_python39_cuda12.2'
-                    args '--gpus all -u root'
+                    args '--gpus all -u 1000:1000'
                 }
             }
 
