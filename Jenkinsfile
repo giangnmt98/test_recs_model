@@ -77,10 +77,8 @@ pipeline {
                 script {
                     // Set up Python environment once
                     sh '''
-                    echo "=== Setting up Python environment ==="
-                    conda env list
-                    find / -name "conda.sh" 2>/dev/null
-                    . /opt/conda/etc/profile.d/conda.sh
+                    export PATH="/opt/conda/bin:$PATH"
+                    echo "=== Setting up Python environment ==="\
                     conda activate py3.9
                     python3 -m pip install  --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
@@ -94,6 +92,8 @@ pipeline {
 
                     // Run tests
                     sh '''
+                     export PATH="/opt/conda/bin:$PATH"
+                     conda activate py3.9
                      echo "=== Running Tests ==="
                      python3 -B -m pytest -s --durations=0 --disable-warnings tests/
                     '''
