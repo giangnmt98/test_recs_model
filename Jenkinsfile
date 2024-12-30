@@ -94,8 +94,9 @@ pipeline {
                     sh '''
                      echo "=== Running Tests ==="
                      . venv/bin/activate
-                     chmod -R 777 recmodel
-                     chown -R $(id -u):$(id -g) recmodel
+                     chown -R root:root recmodel
+                     chmod -R 755 /recmodel
+
                      ls -la recmodel
                      export MLFLOW_TRACKING_LOG_LEVEL=DEBUG
                      cp -R recmodel /tmp/recmodel_test
