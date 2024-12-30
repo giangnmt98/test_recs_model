@@ -95,7 +95,7 @@ pipeline {
                      echo "=== Running Tests ==="
                      . venv/bin/activate
                      chmod -R 777 recmodel
-                     mlflow run  --uid=0
+                     chown -R $(id -u):$(id -g) recmodel
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
