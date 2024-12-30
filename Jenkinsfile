@@ -79,6 +79,7 @@ pipeline {
                     sh '''
                     echo "=== Setting up Python environment ==="
                     conda env list
+                    python3 --version
                     python3 -m pip install --cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 //
