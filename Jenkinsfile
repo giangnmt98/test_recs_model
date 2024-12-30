@@ -96,7 +96,6 @@ pipeline {
                      . venv/bin/activate
                      chmod -R 777 recmodel
                      chown -R $(id -u):$(id -g) recmodel
-                     mkdir recmodel_clean
                      apt install -y rsync
                      rsync -av --exclude-from='.mlflowignore' recmodel/ recmodel_clean/
                      ls -la recmodel
