@@ -91,18 +91,21 @@ pipeline {
 //                     '''
 
                     // Run tests
-                    sh '''
-                     echo "=== Running Tests ==="
-                     . venv/bin/activate
-                     export MLFLOW_TRACKING_LOG_LEVEL=DEBUG
-                     python3 -m pytest -s --durations=0 --disable-warnings --log-cli-level=DEBUG  tests/
-                    '''
+//                     sh '''
+//                      echo "=== Running Tests ==="
+//                      . venv/bin/activate
+//                      export MLFLOW_TRACKING_LOG_LEVEL=DEBUG
+//                      python3 -m pytest -s --durations=0 --disable-warnings --log-cli-level=DEBUG  tests/
+//                     '''
 
                     // Run main application
-//                     sh '''
-//                     echo "=== Running Main File ==="
-//                     CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES python3 main.py
-//                     '''
+                    sh '''
+                    . venv/bin/activate
+                    echo "=== Running Main File ==="
+                    ls -la recmodel
+                    CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES python3 main.py
+
+                    '''
                 }
             }
         }
