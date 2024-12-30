@@ -94,8 +94,9 @@ pipeline {
                     sh '''
                      echo "=== Running Tests ==="
                      . venv/bin/activate
-                      export PYTHONPYCACHEPREFIX=pycache/
+                     export PYTHONPYCACHEPREFIX=pycache/
                      export MLFLOW_TRACKING_LOG_LEVEL=DEBUG
+                     ls -laR recmodel
                      python3 -m pytest -s --durations=0 --disable-warnings --log-cli-level=DEBUG  tests/
                     '''
 
