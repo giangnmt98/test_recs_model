@@ -79,7 +79,8 @@ pipeline {
                     sh '''
                     echo "=== Setting up Python environment ==="
                     conda env list
-                    . /opt/conda/etc/profile.d/conda.sh
+                    find / -name "conda.sh" 2>/dev/null
+                    . ~/anaconda3/etc/profile.d/conda.sh
                     conda activate py3.9
                     python3 -m pip install  --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
