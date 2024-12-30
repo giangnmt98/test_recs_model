@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     environment {
         CODE_DIRECTORY = 'recmodel'
         CUDA_VISIBLE_DEVICES = '0'
@@ -76,7 +77,7 @@ pipeline {
                 script {
                     // Set up Python environment once
                     sh '''
-                    chmod -R 777 /var/jenkins_home/pip_cache
+                    chown -R 1000:1000 .
                     echo "=== Setting up Python environment ==="
                     python3 -m pip install --cache-dir /var/jenkins_home/pip_cache --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
@@ -91,8 +92,8 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
-
-
+                     chown -R 1000:1000
+                     ls -la recmodel
                      python3 -B -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
