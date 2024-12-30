@@ -95,9 +95,7 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
-                     export PATH="/opt/conda/bin:$PATH"
-                     . /opt/conda/etc/profile.d/conda.sh
-                     conda activate py3.9
+                     . venv/bin/activate
                      python3 -B -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
