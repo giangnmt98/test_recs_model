@@ -78,9 +78,6 @@ pipeline {
                     // Set up Python environment once
                     sh '''
                     echo "=== Setting up Python environment ==="
-                    python3 --version
-                    python3 -m venv venv
-                    . venv/bin/activate
                     python3 -m pip install --cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 //
@@ -94,8 +91,6 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
-                     . venv/bin/activate
-                     export PYTHONPYCACHEPREFIX=pycache/
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
