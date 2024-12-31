@@ -60,45 +60,45 @@ class TestDailyPipeline:
             test_rec_model.run()
             test_rec_model.evaluate()
 
-    def test_clean_up_at_the_end(self):
-        self.clean_folder()
+    # def test_clean_up_at_the_end(self):
+    #     self.clean_folder()
 
-    def clean_folder(self):
-        paths = [
-            "experiments/",
-            "lightning_logs/",
-            "mlruns.db",
-            "mlruns/",
-        ]
-        import os
+    # def clean_folder(self):
+    #     paths = [
+    #         "experiments/",
+    #         "lightning_logs/",
+    #         "mlruns.db",
+    #         "mlruns/",
+    #     ]
+    #     import os
+    #
+    #     for f in paths:
+    #         if "/" not in f and os.path.exists(f):
+    #             os.remove(f)
+    #         else:
+    #             shutil.rmtree(f, ignore_errors=True)
 
-        for f in paths:
-            if "/" not in f and os.path.exists(f):
-                os.remove(f)
-            else:
-                shutil.rmtree(f, ignore_errors=True)
 
-
-@pytest.fixture(scope="session", autouse=True)
-def cleanup(request):
-    """Cleanup a testing directory once we are finished."""
-
-    def remove_test_dir():
-        paths = [
-            "experiments/",
-            "lightning_logs/",
-            "model_configs/",
-            "mlruns.db",
-            "mlruns/",
-        ]
-        import os
-
-        for f in paths:
-            if "/" not in f and os.path.exists(f):
-                os.remove(f)
-            else:
-                shutil.rmtree(
-                    f"{os.path.dirname(os.path.realpath(__file__))}/{f}", ignore_errors=True
-                )
-
-    request.addfinalizer(remove_test_dir)
+# @pytest.fixture(scope="session", autouse=True)
+# def cleanup(request):
+#     """Cleanup a testing directory once we are finished."""
+#
+#     def remove_test_dir():
+#         paths = [
+#             "experiments/",
+#             "lightning_logs/",
+#             "model_configs/",
+#             "mlruns.db",
+#             "mlruns/",
+#         ]
+#         import os
+#
+#         for f in paths:
+#             if "/" not in f and os.path.exists(f):
+#                 os.remove(f)
+#             else:
+#                 shutil.rmtree(
+#                     f"{os.path.dirname(os.path.realpath(__file__))}/{f}", ignore_errors=True
+#                 )
+#
+#     request.addfinalizer(remove_test_dir)
