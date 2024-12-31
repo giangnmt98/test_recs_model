@@ -71,6 +71,8 @@ pipeline {
 
             environment {
                 CUDA_VISIBLE_DEVICES = "${CUDA_VISIBLE_DEVICES}"
+                HOME = ""/root"
+                SPARK_JARS_IVY = ""/root/.ivy2"
             }
 
             steps {
@@ -95,7 +97,6 @@ pipeline {
                      echo "=== Running Tests ==="
                      . venv/bin/activate
                      export PYTHONPYCACHEPREFIX=pycache/
-                     ENV HOME=/root
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
