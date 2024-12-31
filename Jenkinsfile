@@ -71,8 +71,6 @@ pipeline {
 
             environment {
                 CUDA_VISIBLE_DEVICES = "${CUDA_VISIBLE_DEVICES}"
-                HOME = "/root"
-                SPARK_JARS_IVY = "~/.ivy2"
             }
 
             steps {
@@ -81,7 +79,6 @@ pipeline {
                     sh '''
                     echo "=== Setting up Python environment ==="
                     python3 -m venv venv
-                    pwd
                     . venv/bin/activate
                     python3 -m pip install --cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
