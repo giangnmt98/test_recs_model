@@ -97,6 +97,8 @@ pipeline {
                      export PYTHONPYCACHEPREFIX=pycache/
                      export MLFLOW_TRACKING_LOG_LEVEL=DEBUG
                      ls -laR recmodel
+                     chown -R root:root recmodel
+                     chmod -R u+r recmodel
                      python3 -m pytest -s --durations=0 --disable-warnings --log-cli-level=DEBUG  tests/
                     '''
 
