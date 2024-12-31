@@ -71,8 +71,6 @@ pipeline {
 
             environment {
                 CUDA_VISIBLE_DEVICES = "${CUDA_VISIBLE_DEVICES}"
-                PYTHONPYCACHEPREFIX = "pycache"
-                MLFLOW_LOG_LEVEL='DEBUG'
             }
 
             steps {
