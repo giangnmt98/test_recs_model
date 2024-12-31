@@ -80,7 +80,6 @@ pipeline {
                     // Set up Python environment once
                     sh '''
                     echo "=== Setting up Python environment ==="
-                    whoami
                     python3 -m pip install --cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
 //
@@ -92,17 +91,17 @@ pipeline {
 //                     '''
 
                     // Run tests
-                    sh '''
-                     echo "=== Running Tests ==="
-                     ls -laR recmodel
-                     python3 -m pytest -s --durations=0 --disable-warnings tests/
-                    '''
+//                     sh '''
+//                      echo "=== Running Tests ==="
+//                      ls -laR recmodel
+//                      python3 -m pytest -s --durations=0 --disable-warnings tests/
+//                     '''
 
                     // Run main application
-//                     sh '''
-//                     echo "=== Running Main File ==="
-//                     CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES python3 main.py
-//                     '''
+                    sh '''
+                    echo "=== Running Main File ==="
+                    CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES python3 main.py
+                     '''
                 }
             }
         }
