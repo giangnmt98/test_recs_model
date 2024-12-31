@@ -93,14 +93,14 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
-                     CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES python3 pytest -s --durations=0 --disable-warnings tests/
+                     CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES CUDA_VISIBLE_DEVICES="" TEST_MODE="yes" ${PYTHON} -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
                     // Run main application
-                    sh '''
-                    echo "=== Running Main File ==="
-                    CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES python3 main.py
-                     '''
+//                     sh '''
+//                     echo "=== Running Main File ==="
+//                     CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES python3 main.py
+//                      '''
                 }
             }
         }
