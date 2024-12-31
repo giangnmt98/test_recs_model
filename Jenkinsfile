@@ -95,7 +95,7 @@ pipeline {
                      echo "=== Running Tests ==="
                      . venv/bin/activate
                      export PYTHONPYCACHEPREFIX=pycache/
-                     find / -name ".ivy2" 2>/dev/null
+                     ENV HOME=/root
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
