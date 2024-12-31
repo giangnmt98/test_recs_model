@@ -65,7 +65,7 @@ pipeline {
             agent {
                 docker {
                     image 'test'
-                    args '--gpus all -u root'
+                    args '--gpus all'
                 }
             }
 
@@ -95,10 +95,7 @@ pipeline {
                      echo "=== Running Tests ==="
                      . venv/bin/activate
                      export PYTHONPYCACHEPREFIX=pycache/
-                     export MLFLOW_TRACKING_LOG_LEVEL=DEBUG
-                     chown -R root:root recmodel
-                     chmod -R u+r recmodel
-                     ls -laR recmodel
+                     export MLFLOW_TRACKING_LOG_LEVEL=DEBU
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
