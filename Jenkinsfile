@@ -71,8 +71,8 @@ pipeline {
 
             environment {
                 CUDA_VISIBLE_DEVICES = "${CUDA_VISIBLE_DEVICES}"
-                HOME = ""/root"
-                SPARK_JARS_IVY = ""/root/.ivy2"
+                HOME = "/root"
+                SPARK_JARS_IVY = "root/.ivy2"
             }
 
             steps {
