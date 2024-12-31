@@ -93,7 +93,7 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
-                     CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES CUDA_VISIBLE_DEVICES="" TEST_MODE="yes" ${PYTHON} -m pytest -s --durations=0 --disable-warnings tests/
+                     CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES CUDA_VISIBLE_DEVICES="" TEST_MODE="yes" python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
                     // Run main application
