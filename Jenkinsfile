@@ -92,6 +92,7 @@ pipeline {
                     // Run tests
                     sh '''
                      echo "=== Running Tests ==="
+                     ls -laR recmodel
                      python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
 
