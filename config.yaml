@@ -1,0 +1,7 @@
+infer_date: 20230430
+model_name: "dhashdlrm"
+num_days_to_train: 90
+data_path: "/home/giang/Desktop/data/processed/preprocessed_features/features"
+# using pyspark must set IS_USE_MEMORY_CACHE to False
+cpu_process_lib: "pandas"
+model_config_path: "model_configs/models/"

@@ -1,0 +1,126 @@
+config_name: dhashtwotower
+with_train_full_data: True
+data_loader:
+    cls_name: recmodel.dataloader.dl.PytorchDataLoader
+    time_order_event_col: filename_date
+    popularity_item_group_col: popularity_item_group
+    user_id_col: user_id
+    account_feature_names:
+      - encoded_age_group
+      - encoded_user_province
+      - encoded_user_package_code
+    user_feature_names:
+      - hashed_user_id
+      - hashed_user_id_v2
+    item_id_col: item_id
+    item_feature_names:
+      - hashed_item_id
+      - hashed_item_id_v2
+      - encoded_content_parent_type
+      - encoded_content_country
+      - encoded_content_type
+      - hashed_content_category
+    context_feature_names:
+      - is_weekend
+    user_context_feature_names:
+      - encoded_prefer_movie_type
+      - encoded_prefer_vod_type
+
+    label_col: is_interacted
+    duration_col: duration
+    weight_col: weighted_lr
+    batch_size: 100000
+    shuffle: True
+    popularity_sample_groups: ["100", "101-300"]
+    factor_popularity_sample_groups: [0.0, 0.00]
+    tail_sample_groups: ["301-1000", "1001-2000", ">2000", "others"]
+    factor_tail_sample_groups: [1, 1, 1, 1]
+    debug: False
+
+    train_filters:
+      - random_user_group <= 10
+    validation_filters:
+      - random_user_group <= 10
+
+
+
+model_wrapper:
+    cls_name: recmodel.model.model_wrappers.DHashTwoTowerModelWrapper
+    model_params:
+      hidden_layers: [64, 32, 16]
+      sparse_features:
+        - name: hashed_user_id
+          num_inputs: 600014
+          num_factors: 32
+          is_user_feature: True
+        - name: hashed_item_id
+          num_inputs: 600014
+          num_factors: 32
+          is_user_feature: False
+        - name: hashed_user_id_v2
+          num_inputs: -1
+          num_factors: 32
+          is_user_feature: True
+        - name: hashed_item_id_v2
+          num_inputs: -1
+          num_factors: 32
+          is_user_feature: False
+        - name: encoded_user_province
+          num_inputs: 65
+          num_factors: 32
+          is_user_feature: True
+        - name: encoded_user_package_code
+          num_inputs: 20
+          num_factors: 32
+          is_user_feature: True
+        - name: encoded_content_parent_type
+          num_inputs: 8
+          num_factors: 32
+          is_user_feature: False
+        - name: encoded_content_country
+          num_inputs: 36
+          num_factors: 32
+          is_user_feature: False
+        - name: encoded_content_type
+          num_inputs: 34
+          num_factors: 32
+          is_user_feature: False
+        - name: hashed_content_category
+          num_inputs: 4001
+          num_factors: 32
+          is_user_feature: False
+        - name: encoded_age_group
+          num_inputs: 7
+          num_factors: 32
+          is_user_feature: True
+      optimizer:
+        cls_name: torch.optim.Adam
+        params:
+          lr: 0.01
+
+    fit_params:
+      max_epochs: 2
+      accelerator: auto
+      devices: auto
+      # precision: 16-mixed
+      num_sanity_val_steps: -1
+      reload_dataloaders_every_n_epochs: 1
+
+model_analysis:
+  metrics:
+    - recall_at_k
+    - precision_at_k
+    - ndcg_at_k
+  by_features:
+    - encoded_user_province
+    - encoded_content_parent_type
+    - encoded_content_country
+    - encoded_content_type
+  by_external_user_features:
+    - user_age_group
+    - user_platform
+  by_external_item_features:
+    - publish_week
+    - movie_publish_week
+    - publish_month
+    - movie_publish_month
