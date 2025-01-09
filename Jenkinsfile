@@ -72,11 +72,6 @@ pipeline {
                      echo "=== Running Tests ==="
                      CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES TEST_MODE="yes" python3 -m pytest -s --durations=0 --disable-warnings tests/
                     '''
-                    // Run main application
-                    sh '''
-                    echo "=== Running Main File ==="
-                    CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES python3 main.py
-                     '''
                 }
             }
         }
