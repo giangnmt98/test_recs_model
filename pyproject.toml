@@ -25,7 +25,6 @@ dependencies = [
     "pyarrow==11.0.0",
     "torch==2.5.1",
     "pytorch-lightning==2.0.3",
-    "apache-airflow==2.6.1",
     "checksumdir==1.2.0",
     "xxhash==3.3.0",
     "bayesian-optimization==1.4.3",
