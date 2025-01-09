@@ -8,15 +8,6 @@ pipeline {
         timestamps()
         disableConcurrentBuilds()
     }
-    stages {
-        stage('Checkout SCM') {
-            steps {
-                script {
-                    // Checkout code
-                    checkout scm
-                }
-            }
-        }
         stage('Check Code') {
             steps {
                 script {
