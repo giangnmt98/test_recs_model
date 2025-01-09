@@ -8,6 +8,7 @@ pipeline {
         timestamps()
         disableConcurrentBuilds()
     }
+    stages {
         stage('Check Code') {
             steps {
                 script {
