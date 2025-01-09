@@ -24,7 +24,7 @@ pipeline {
                         fi
                     done
                     echo "=== Checking lines of code changes ==="
-                    MAX_CHANGE_LINES=300
+                    MAX_CHANGE_LINES=200
                     git fetch origin main
                     LAST_MAIN_COMMIT=$(git rev-parse origin/main)
                     CURRENT_COMMIT=$(git rev-parse HEAD)
