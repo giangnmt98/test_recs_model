@@ -78,20 +78,11 @@ class Evaluation:
         return PytorchPipeline(self.model_pipeline_config, process_lib=self.process_lib)
 
     def _read_eval_df(self, for_date: int):
-        dt = datetime.strptime(str(for_date), const.FILENAME_DATE_FORMAT)
-        year = "{:04d}".format(dt.year)
-        month = "{:02d}".format(dt.month)
-        day = "{:02d}".format(dt.day)
         eval_data_path = Path(self.data_path).parent / "materialized_offline_data"
         user_eval_data_path = eval_data_path / "user_features"
         item_eval_data_path = eval_data_path / "item_features"
-        print(f"{str(user_eval_data_path)}/df*/daily/{year}/{month}/{day}")
-        user_path = glob(f"{str(user_eval_data_path)}/df*/daily/{year}/{month}/{day}")[
-            0
-        ]
-        item_path = glob(f"{str(item_eval_data_path)}/df*/daily/{year}/{month}/{day}")[
-            0
-        ]
+        user_path = glob(f"{str(user_eval_data_path)}/{for_date}")[0]
+        item_path = glob(f"{str(item_eval_data_path)}/{for_date}")[0]
 
         if self.process_lib == "pyspark":
             spark = self.spark_operation.get_spark_session()
