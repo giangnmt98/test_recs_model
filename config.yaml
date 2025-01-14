@@ -5,3 +5,4 @@ data_path: "/home/giang/Desktop/data/processed/preprocessed_features/features"
 # using pyspark must set IS_USE_MEMORY_CACHE to False
 cpu_process_lib: "pandas"
 model_config_path: "model_configs/models/"
+use_mlflow_tracking_server: True
