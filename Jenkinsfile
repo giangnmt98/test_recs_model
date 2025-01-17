@@ -51,7 +51,7 @@ pipeline {
             agent {
                 docker {
                     image 'test'
-                    args '--gpus all'
+                    args '-v ~.ssh:/home/docker/.ssh --gpus all'
                 }
             }
             environment {
@@ -62,7 +62,8 @@ pipeline {
                     // Set up Python environment once
                     sh '''
                     echo "=== Setting up Python environment ==="
-                    python3 -m pip install --cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
+                    export PATH=$PATH:/home/docker/.local/bin
+                    python3 -m pip install --user --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
                     // Run linting
                     sh '''
