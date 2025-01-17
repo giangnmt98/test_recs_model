@@ -62,8 +62,8 @@ pipeline {
                     // Set up Python environment once
                     sh '''
                     echo "=== Setting up Python environment ==="
-                    export PATH=$PATH:/home/docker/.local/bin
-                    python3 -m pip install --user --cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
+                    python3 --version
+                    python3 -m pip install--cache-dir /opt/conda/pkgs --extra-index-url https://pypi.nvidia.com -e .[dev]
                     '''
                     // Run linting
                     sh '''
