@@ -50,7 +50,7 @@ pipeline {
         stage('Setup and Run Pipeline') {
             agent {
                 docker {
-                    image 'test'
+                    image 'abc'
                     args '--gpus all'
                 }
             }
