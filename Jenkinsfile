@@ -3,6 +3,8 @@ pipeline {
     environment {
         CODE_DIRECTORY = 'recmodel'
         CUDA_VISIBLE_DEVICES = '0'
+        TELEGRAM_BOT_TOKEN = '7897102108:AAEm888B6NUD4zRvlNfmvSCzNC94955cevg' // Thay bằng token của bot Telegram
+        TELEGRAM_CHAT_ID = '2032100419'    // Thay bằng chat ID (phải start chat với bot trước) hoặc nhóm
     }
     options {
         timestamps()
@@ -77,12 +79,77 @@ pipeline {
             }
         }
     }
-    post {
+post {
         success {
-            echo "Pipeline completed successfully."
-        }
-        failure {
-            echo "Pipeline failed."
+            script {
+                // Hàm format timestamp sang định dạng ngày/giờ
+            def formatTimestamp = { timestamp ->
+                def date = new Date(timestamp)
+                return date.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))
+            }
+            def cause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')
+            // Tính thời gian bắt đầu, kết thúc, và thời lượng build
+            def startTimestamp = currentBuild.startTimeInMillis
+            def durationInMillis = currentBuild.duration ?: 0 // Dự phòng nếu không tồn tại duration
+            def endTimestamp = startTimestamp + durationInMillis
+
+            def startTime = formatTimestamp(startTimestamp)
+            def endTime = formatTimestamp(endTimestamp)
+            def duration = currentBuild.durationString ?: "Unknown duration"
+
+            // Tạo thông báo plain text để gửi tới Telegram
+           def MESSAGE = "✅ Jenkins Pipeline Success ✅\n" +
+                         "Job: ${env.JOB_NAME}\n" +
+                         "Build: ${env.BUILD_NUMBER}\n" +
+                         "By User: ${cause.userName}\n" +
+                         "Start Time: ${startTime}\n" +
+                         "End Time: ${endTime}\n" +
+                         "Duration: ${duration}\n" +
+                         "View Details: ${env.BUILD_URL}"
+
+            // Gửi thông báo Telegram
+            sh """
+            curl -s -X POST https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage \
+            -d chat_id=${TELEGRAM_CHAT_ID} \
+            -d text="${MESSAGE}"
+            """
         }
     }
+    failure {
+            script {
+                // Hàm format timestamp sang định dạng ngày/giờ
+            def formatTimestamp = { timestamp ->
+                def date = new Date(timestamp)
+                return date.format("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))
+            }
+            def cause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')
+
+            // Tính thời gian bắt đầu, kết thúc, và thời lượng build
+            def startTimestamp = currentBuild.startTimeInMillis
+            def durationInMillis = currentBuild.duration ?: 0 // Dự phòng nếu không tồn tại duration
+            def endTimestamp = startTimestamp + durationInMillis
+
+            def startTime = formatTimestamp(startTimestamp)
+            def endTime = formatTimestamp(endTimestamp)
+            def duration = currentBuild.durationString ?: "Unknown duration"
+
+            // Tạo thông báo plain text để gửi tới Telegram
+           def MESSAGE = " 🚨 Jenkins Pipeline Failed 🚨\n" +
+             "Job: ${env.JOB_NAME}\n" +
+             "Build: ${env.BUILD_NUMBER}\n" +
+             "By User: ${cause.userName}\n" +
+             "Start Time: ${startTime}\n" +
+             "End Time: ${endTime}\n" +
+             "Duration: ${duration}\n" +
+             "View Details: ${env.BUILD_URL}"
+
+            // Gửi thông báo Telegram
+            sh """
+            curl -s -X POST https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage \
+            -d chat_id=${TELEGRAM_CHAT_ID} \
+            -d text="${MESSAGE}"
+            """
+        }
+    }
+}
 }
