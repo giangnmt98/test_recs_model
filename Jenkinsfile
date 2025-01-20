@@ -3,8 +3,8 @@ pipeline {
     environment {
         CODE_DIRECTORY = 'recmodel'
         CUDA_VISIBLE_DEVICES = '0'
-        TELEGRAM_BOT_TOKEN = '7897102108:AAEm888B6NUD4zRvlNfmvSCzNC94955cevg' // Thay bằng token của bot Telegram
-        TELEGRAM_CHAT_ID = '2032100419'    // Thay bằng chat ID (phải start chat với bot trước) hoặc nhóm
+        TELEGRAM_BOT_TOKEN = '' // Thay bằng token của bot Telegram
+        TELEGRAM_CHAT_ID = ''    // Thay bằng chat ID (phải start chat với bot trước) hoặc nhóm
     }
     options {
         timestamps()
