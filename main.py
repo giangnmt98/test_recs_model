@@ -21,15 +21,15 @@ if __name__ == "__main__":
 
     config = load_simple_dict_config(args.config_path)
     model_name = config["model_name"]
+    use_tracking_server = config["use_mlflow_tracking_server"]
 
-    with MLflowMaster(experiment_name=model_name).mlflow.start_run(
+    with MLflowMaster(experiment_name=model_name, use_tracking_server=use_tracking_server).mlflow.start_run(
         run_name=str(config["infer_date"]) + "_" + datetime.now().strftime("%H%M%S")
     ):
         if GpuLoading().is_gpu_available():
             device_id = 0
         else:
             device_id = -1
-        print()
         test_rec_model = TestRecModel(
             infer_date=config["infer_date"],
             num_days_to_train=config["num_days_to_train"],

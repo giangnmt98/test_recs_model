@@ -38,7 +38,6 @@ class MLflowMaster(metaclass=SingletonMeta):
         self.use_tracking_server = (
             use_tracking_server  # New attribute to toggle between SQLite and MySQL
         )
-
         # Initialize MLflow
         self.initialize_mlflow(tracking_uri, experiment_name)
 
@@ -51,7 +50,7 @@ class MLflowMaster(metaclass=SingletonMeta):
             experiment_name (str): Name of the MLflow experiment to set.
         """
         # Determine tracking URI based on the storage type
-        if tracking_uri is not None:
+        if tracking_uri is None:
             if self.use_tracking_server:
                 tracking_uri = (
                     f"mysql+mysqldb://{self.mysql_user}:{self.mysql_password}"
