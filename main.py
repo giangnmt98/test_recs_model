@@ -5,6 +5,12 @@ from recmodel.base.utils.config import load_simple_dict_config
 from recmodel.base.utils.gpu import GpuLoading
 from recmodel.base.utils.mlflow import MLflowMaster
 from recmodel.src import TestRecModel
+import logging
+
+# Tắt log từ py4j
+logging.getLogger("py4j").setLevel(logging.ERROR)
+logging.getLogger("onnxscript").setLevel(logging.ERROR)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

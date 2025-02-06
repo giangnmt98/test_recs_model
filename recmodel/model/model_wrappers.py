@@ -254,6 +254,7 @@ class DeepLearningModelWrapper(BaseModelWrapper):
         return self.model.best_auc
 
     def load_model(self, model_path: str):
+        print("AAAAAAAAAAAA", model_path)
         self.model = self.mlflow_master.mlflow.pytorch.load_model(model_uri=model_path)
         if self.gpu_loading.get_gpu_device_id() != -1:
             self.model = self.model.to(f"cuda:{self.gpu_loading.get_gpu_device_id()}")
