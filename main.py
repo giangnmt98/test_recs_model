@@ -6,6 +6,7 @@ from recmodel.base.utils.gpu import GpuLoading
 from recmodel.base.utils.mlflow import MLflowMaster
 from recmodel.src import TestRecModel
 import logging
+from sqlalchemy import create_engine
 
 # Tắt log từ py4j
 logging.getLogger("py4j").setLevel(logging.ERROR)
@@ -29,6 +30,10 @@ if __name__ == "__main__":
     model_name = config["model_name"]
     use_tracking_server = config["use_mlflow_tracking_server"]
 
+    engine = create_engine("mysql+mysqldb://root:DsteamIC2024@localhost:3306/mlflow")
+    connection = engine.connect()
+    logging.info("Successfully connected to the MySQL database.")
+    
     with MLflowMaster(experiment_name=model_name, use_tracking_server=use_tracking_server).mlflow.start_run(
         run_name=str(config["infer_date"]) + "_" + datetime.now().strftime("%H%M%S")
     ):
