@@ -31,7 +31,7 @@ if __name__ == "__main__":
     # use_tracking_server = config["use_mlflow_tracking_server"]
     # print("AAAAAAAAAAAA")
 
-    engine = create_engine("mysql+mysqldb://root:DsteamIC2024@0.0.0.0.0:3306/mlflow")
+    engine = create_engine("mysql+mysqldb://root:DsteamIC2024@0.0.0.0:3306/mlflow")
     connection = engine.connect()
     logging.info("Successfully connected to the MySQL database.")
     #
