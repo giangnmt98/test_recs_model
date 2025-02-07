@@ -7,7 +7,7 @@ from recmodel.base.utils.singleton import SingletonMeta
 # Extract constants for environment variable defaults
 DEFAULT_MYSQL_USER = "root"
 DEFAULT_MYSQL_PASSWORD = "DsteamIC2024"
-DEFAULT_MYSQL_HOST = "0.0.0.0"
+DEFAULT_MYSQL_HOST = "localhost"
 DEFAULT_MYSQL_PORT = "3306"
 DEFAULT_MYSQL_MLFLOW_DATABASE = "mlflow"
 DEFAULT_SQLITE_URI = "sqlite:///mlflow.db"  # Path to SQLite database file
@@ -58,6 +58,8 @@ class MLflowMaster(metaclass=SingletonMeta):
                 )
             else:
                 tracking_uri = DEFAULT_SQLITE_URI
+        print(
+            f"MLflow tracking URI: {tracking_uri}")
 
         # Set MLflow tracking URI and experiment
         self.mlflow.set_tracking_uri(uri=tracking_uri)
