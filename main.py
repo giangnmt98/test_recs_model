@@ -36,6 +36,8 @@ if __name__ == "__main__":
             device_id = 0
         else:
             device_id = -1
+        print("AAAAAAAAAAAA")
+
         # test_rec_model = TestRecModel(
         #     infer_date=config["infer_date"],
         #     num_days_to_train=config["num_days_to_train"],

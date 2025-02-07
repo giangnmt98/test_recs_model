@@ -42,7 +42,8 @@ dependencies = [
     "cudf-cu12==23.8.0",
     "cuml-cu12==23.8.0",
     "onnxscript==0.1.0.dev20241101",
-    "mysqlclient"]
+    "mysqlclient==2.2.7",
+    "PyMySQL"]
 
 [project.optional-dependencies]
 dev = [
