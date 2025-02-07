@@ -33,7 +33,7 @@ class MLflowMaster(metaclass=SingletonMeta):
         self.mysql_password = os.getenv("MYSQL_PASSWORD", DEFAULT_MYSQL_PASSWORD)
         self.mysql_host = os.getenv("MYSQL_HOST", DEFAULT_MYSQL_HOST)
         self.mysql_port = os.getenv("MYSQL_PORT", DEFAULT_MYSQL_PORT)
-        self.mysql_database = os.getenv("DEFAULT_MYSQL_MLFLOW_DATABASE", DEFAULT_MYSQL_MLFLOW_DATABASE)
+        self.mysql_database = os.getenv("MYSQL_MLFLOW_DATABASE", DEFAULT_MYSQL_MLFLOW_DATABASE)
         self.mlflow = mlflow
         self.use_tracking_server = (
             use_tracking_server  # New attribute to toggle between SQLite and MySQL
