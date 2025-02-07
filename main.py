@@ -1,10 +1,10 @@
 import argparse
 from datetime import datetime
 
-from recmodel.base.utils.config import load_simple_dict_config
-from recmodel.base.utils.gpu import GpuLoading
-from recmodel.base.utils.mlflow import MLflowMaster
-from recmodel.src import TestRecModel
+# from recmodel.base.utils.config import load_simple_dict_config
+# from recmodel.base.utils.gpu import GpuLoading
+# from recmodel.base.utils.mlflow import MLflowMaster
+# from recmodel.src import TestRecModel
 import logging
 from sqlalchemy import create_engine
 
@@ -14,22 +14,22 @@ from sqlalchemy import create_engine
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Train and evaluate recommendation model."
-    )
-    parser.add_argument(
-        "--config_path",
-        type=str,
-        nargs="?",
-        default="config.yaml",
-        help="Path to the configuration file",
-    )
-    args = parser.parse_args()
-
-    config = load_simple_dict_config(args.config_path)
-    model_name = config["model_name"]
-    use_tracking_server = config["use_mlflow_tracking_server"]
-    print("AAAAAAAAAAAA")
+    # parser = argparse.ArgumentParser(
+    #     description="Train and evaluate recommendation model."
+    # )
+    # parser.add_argument(
+    #     "--config_path",
+    #     type=str,
+    #     nargs="?",
+    #     default="config.yaml",
+    #     help="Path to the configuration file",
+    # )
+    # args = parser.parse_args()
+    #
+    # config = load_simple_dict_config(args.config_path)
+    # model_name = config["model_name"]
+    # use_tracking_server = config["use_mlflow_tracking_server"]
+    # print("AAAAAAAAAAAA")
 
     engine = create_engine("mysql+mysqldb://root:DsteamIC2024@localhost:3306/mlflow")
     connection = engine.connect()
