@@ -9,8 +9,8 @@ import logging
 from sqlalchemy import create_engine
 
 # Tắt log từ py4j
-logging.getLogger("py4j").setLevel(logging.ERROR)
-logging.getLogger("onnxscript").setLevel(logging.ERROR)
+# logging.getLogger("py4j").setLevel(logging.ERROR)
+# logging.getLogger("onnxscript").setLevel(logging.ERROR)
 
 
 if __name__ == "__main__":
@@ -34,14 +34,14 @@ if __name__ == "__main__":
     engine = create_engine("mysql+mysqldb://root:DsteamIC2024@localhost:3306/mlflow")
     connection = engine.connect()
     logging.info("Successfully connected to the MySQL database.")
-    
-    with MLflowMaster(experiment_name=model_name, use_tracking_server=use_tracking_server).mlflow.start_run(
-        run_name=str(config["infer_date"]) + "_" + datetime.now().strftime("%H%M%S")
-    ):
-        if GpuLoading().is_gpu_available():
-            device_id = 0
-        else:
-            device_id = -1
+    #
+    # with MLflowMaster(experiment_name=model_name, use_tracking_server=use_tracking_server).mlflow.start_run(
+    #     run_name=str(config["infer_date"]) + "_" + datetime.now().strftime("%H%M%S")
+    # ):
+    #     if GpuLoading().is_gpu_available():
+    #         device_id = 0
+    #     else:
+    #         device_id = -1
 
         # test_rec_model = TestRecModel(
         #     infer_date=config["infer_date"],
