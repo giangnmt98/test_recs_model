@@ -29,6 +29,7 @@ if __name__ == "__main__":
     config = load_simple_dict_config(args.config_path)
     model_name = config["model_name"]
     use_tracking_server = config["use_mlflow_tracking_server"]
+    print("AAAAAAAAAAAA")
 
     engine = create_engine("mysql+mysqldb://root:DsteamIC2024@localhost:3306/mlflow")
     connection = engine.connect()
@@ -41,7 +42,6 @@ if __name__ == "__main__":
             device_id = 0
         else:
             device_id = -1
-        print("AAAAAAAAAAAA")
 
         # test_rec_model = TestRecModel(
         #     infer_date=config["infer_date"],
