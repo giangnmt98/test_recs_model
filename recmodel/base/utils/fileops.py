@@ -1,3 +1,4 @@
+import os
 import shutil
 from pathlib import Path
 from typing import Any, List, Optional, Union
@@ -81,48 +82,63 @@ def load_parquet_data(
     """load parquet data."""
 
     if process_lib == "pandas":
-        filters = pq.filters_to_expression(filters) if filters else None
-        if isinstance(file_paths, list):
-            assert len(file_paths) > 0
-            table = pq.read_table(file_paths[0])
-            map_key_values = dict(zip(table.schema.names, table.schema.types))
-            file_paths = [
-                ds.dataset(p, format="parquet", partitioning="hive") for p in file_paths
-            ]
+        # Chuyển filters sang expression nếu có
+        filters_expr = pq.filters_to_expression(filters) if filters else None
 
-            df = (
-                ds.dataset(file_paths)
-                .to_table(columns=with_columns, filter=filters)
-                .to_pandas()
-            )
-
+        # Chuẩn hóa file_paths thành list
+        if isinstance(file_paths, (str, Path)):
+            file_paths = [str(file_paths)]
+        elif isinstance(file_paths, list):
+            if len(file_paths) == 0:
+                raise ValueError("file_paths list must not be empty")
+            file_paths = [str(p) for p in file_paths]
         else:
-            table = pq.read_table(file_paths)
-            df = (
-                ds.dataset(file_paths, format="parquet", partitioning="hive")
-                .to_table(columns=with_columns, filter=filters)
-                .to_pandas()
+            raise ValueError(
+                "file_paths must be a string, Path, or list of strings/Paths"
             )
-            map_key_values = dict(zip(table.schema.names, table.schema.types))
+
+        # Tạo dataset cơ bản
+        if len(file_paths) == 1 and os.path.isdir(file_paths[0]):
+            dataset = ds.dataset(file_paths[0], format="parquet", partitioning="hive")
+        else:
+            for fp in file_paths:
+                if not os.path.isfile(fp):
+                    raise FileNotFoundError(
+                        f"Expected a file but found a directory or missing file: {fp}"
+                    )
+            dataset = ds.dataset(file_paths, format="parquet", partitioning="hive")
+
+        # Sử dụng Scanner để chọn cột và áp dụng bộ lọc ngay khi quét
+        scanner = ds.Scanner.from_dataset(
+            dataset,
+            columns=with_columns,  # Chọn cột ngay từ đầu
+            filter=filters_expr,  # Áp dụng bộ lọc ngay từ đầu
+        )
+
+        # Chuyển trực tiếp sang Pandas
+        df = scanner.to_table().to_pandas()
+
+        # Xử lý schema và ép kiểu dữ liệu
         if schema:
-            return df.astype(schema)
+            df = df.astype(schema)
         else:
+            # Dùng dataset thay vì scanner để lấy schema
+            map_key_values = dict(zip(dataset.schema.names, dataset.schema.types))
             for col in df.columns:
                 try:
                     np_type = __convert_pyarrowschema_to_pandasschema(
                         map_key_values[col]
                     )
-                    if np_type is not None:
+                    if np_type:
                         df[col] = df[col].astype(np_type)
-                except Exception as ex:
-                    ex
+                except Exception:
                     np_type = __convert_pyarrowschema_to_pandasschema(
                         map_key_values[col], is_pass_null=True
                     )
-                    if np_type is not None:
+                    if np_type:
                         df[col] = df[col].astype(np_type)
 
-            return df
+        return df
     elif process_lib == "cudf":
         import cudf
 

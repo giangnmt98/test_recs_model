@@ -1,11 +1,11 @@
 import argparse
+import logging
 from datetime import datetime
 
 from recmodel.base.utils.config import load_simple_dict_config
 from recmodel.base.utils.gpu import GpuLoading
 from recmodel.base.utils.mlflow import MLflowMaster
 from recmodel.src import TestRecModel
-import logging
 
 # Tắt log từ py4j
 logging.getLogger("py4j").setLevel(logging.ERROR)
@@ -29,7 +29,9 @@ if __name__ == "__main__":
     model_name = config["model_name"]
     use_tracking_server = config["use_mlflow_tracking_server"]
 
-    with MLflowMaster(experiment_name=model_name, use_tracking_server=use_tracking_server).mlflow.start_run(
+    with MLflowMaster(
+        experiment_name=model_name, use_tracking_server=use_tracking_server
+    ).mlflow.start_run(
         run_name=str(config["infer_date"]) + "_" + datetime.now().strftime("%H%M%S")
     ):
         if GpuLoading().is_gpu_available():
@@ -44,5 +46,9 @@ if __name__ == "__main__":
             data_path=config["data_path"],
             cpu_process_lib=config["cpu_process_lib"],
         )
+        import time
+
+        start = time.time()
         test_rec_model.run()
         test_rec_model.evaluate()
+        print("Total processing time is: ", time.time() - start)
