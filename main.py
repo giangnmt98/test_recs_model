@@ -41,7 +41,8 @@ if __name__ == "__main__":
         test_rec_model = TestRecModel(
             infer_date=config["infer_date"],
             num_days_to_train=config["num_days_to_train"],
-            config_path=config["model_config_path"] + f"{model_name}.yaml",
+            model_config_path=config["model_config_path"] + f"{model_name}.yaml",
+            config=config,
             device_id=device_id,
             data_path=config["data_path"],
             cpu_process_lib=config["cpu_process_lib"],

@@ -19,7 +19,6 @@ from recmodel.base.utils.utils import (
     filter_partitioned_files,
     get_free_vram,
     get_mapping_from_config,
-    load_config,
     optimize_dataframe_types,
     validate_file_paths,
 )
@@ -72,41 +71,42 @@ def load_parquet_data(
     with_columns: Optional[List[str]] = None,
     process_lib: str = "pandas",
     filters: Optional[List[Any]] = None,
-    spark: Optional[Any] = None,
     schema: Optional[Any] = None,
+    should_optimize: bool = True,
+    config=None,
+    spark=None,
 ):
     """
-    Load dữ liệu từ file Parquet dựa trên thư viện xử lý.
+    Load data from Parquet files using the specified processing library.
 
     Args:
-        file_paths (Union[Path, str, List[Path], List[str]]): Đường dẫn hoặc danh sách
-            đường dẫn tới các file Parquet.
-        with_columns (Optional[List[str]]): Danh sách các cột cần load (nếu có).
-        process_lib (str): Thư viện xử lý dữ liệu, có thể là 'pandas' hoặc 'cudf'.
-        filters (Optional[List[Any]]): Danh sách các bộ lọc áp dụng khi load.
-        spark (Optional[Any]): Đối tượng Spark (nếu sử dụng Spark).
-        schema (Optional[Any]): Schema để áp dụng khi load DataFrame.
+        file_paths (Union[Path, str, List[Path], List[str]]): Path or list of paths
+            to the Parquet files.
+        with_columns (Optional[List[str]]): List of columns to load from the dataset.
+            If None, all columns are loaded.
+        process_lib (str): The library to use for processing ('pandas' or 'cudf').
+        filters (Optional[List[Any]]): List of filters to apply while loading data.
+        schema (Optional[Any]): Schema to apply on the loaded DataFrame.
+        should_optimize (bool): If True, performs data optimization for cudf.
+        config (dict): Configuration for optimization and partition settings.
+        spark (Optional[Any]): Spark session object for loading via Spark.
 
     Returns:
-        pandas.DataFrame hoặc cudf.DataFrame: DataFrame chứa dữ liệu đã được load.
-
-    Raises:
-        ValueError: Nếu không tìm thấy file phù hợp với các bộ lọc.
+        DataFrame: A DataFrame containing the loaded and optionally processed data.
     """
-    # Xác thực danh sách file và thư viện xử lý
+    # Validate file paths and ensure the processing library is supported
     file_paths = validate_file_paths(file_paths, process_lib)
 
     if process_lib == "pandas":
-        # Chuyển filters thành biểu thức Arrow (nếu có)
         filters = pq.filters_to_expression(filters) if filters else None
 
-        # Đọc schema từ file Parquet đầu tiên
+        # Read schema from the first Parquet file
         table = pq.read_table(
             file_paths[0] if isinstance(file_paths, list) else file_paths
         )
         col_types_mapping = dict(zip(table.schema.names, table.schema.types))
 
-        # Tạo dataset từ danh sách file hoặc file đơn lẻ
+        # Create a dataset for processing multiple Parquet files
         dataset = ds.dataset(
             [
                 ds.dataset(path, format="parquet", partitioning="hive")
@@ -118,69 +118,128 @@ def load_parquet_data(
             partitioning="hive",
         )
 
-        # Load dữ liệu và trả kết quả sau khi chuyển schema
+        # Convert dataset to pandas DataFrame
         data_frame = dataset.to_table(columns=with_columns, filter=filters).to_pandas()
+
+        # Convert schema of the data frame based on schema and column types
         return convert_schema(data_frame, schema, col_types_mapping)
 
-    elif process_lib == "cudf":
-        # Load cấu hình từ file
-        config = load_config("config.yaml")
+    elif process_lib == "cudf" and should_optimize:
+        # Extract partition columns from the configuration
         partition_cols = set(config.get("partition_columns", []))
 
-        # Phân chia filters thành partition và non-partition
-        filters = filters or []
-        partition_filters = [f for f in filters if f[0] in partition_cols]
-        filtered_file_paths = filter_partitioned_files(
-            str(file_paths), partition_filters, partition_cols
+        # Process filters into partition and non-partition filters
+        filtered_file_paths, non_partition_filters = process_partition_filters(
+            filters, file_paths, partition_cols
         )
 
-        if not filtered_file_paths:
-            raise ValueError(
-                f"No files match the filters: {partition_filters}. "
-                f"Partition columns: {partition_cols}"
-            )
+        # Calculate batch size based on VRAM availability
+        batch_size = get_batch_size_vram(config["max_batch_size_data_loader"])
 
-        # Tính toán batch size dựa trên VRAM
-        batch_size = estimate_batch_size(get_free_vram(), max_batch=1000)
-        print(f"Estimated batch size: {batch_size}")
-
-        # Lấy filters không thuộc partition
-        non_partition_filters = [f for f in filters if f[0] not in partition_cols]
-
-        # Lấy ánh xạ giá trị mã hóa
+        # Get column mapping for label encoding
         mapping_df = get_mapping_from_config(config, "popularity_item_group")
-        data_frames = []  # Danh sách DataFrame chứa dữ liệu đã xử lý
+        data_frames = []
 
-        # Load dữ liệu từng batch và áp dụng các xử lý
+        # Process data in batches to optimize memory usage
         for i in tqdm(
             range(0, len(filtered_file_paths), batch_size),
             desc="Processing batches",
             leave=True,
             dynamic_ncols=True,
         ):
-            # Đọc file batch hiện tại
+            # Load current batch of data
             batch_df = cudf.read_parquet(
                 filtered_file_paths[i : i + batch_size],
                 columns=with_columns,
                 filters=non_partition_filters,
             )
 
-            # Áp dụng tối ưu hóa và mã hóa nhãn
+            # Optimize data types and apply label encoding
             batch_df = optimize_dataframe_types(
                 apply_label_encoding_cudf(batch_df, mapping_df), config
             )
 
-            # Làm tròn các cột dạng float để giảm độ chính xác không cần thiết
+            # Round float columns to reduce unnecessary precision
             for col in batch_df.columns:
                 if batch_df[col].dtype.kind == "f":  # Float column
                     batch_df[col] = batch_df[col].round(6)
 
-            data_frames.append(batch_df)  # Thêm batch hiện tại vào danh sách
+            data_frames.append(batch_df)
 
-        # Kết hợp tất cả các batches thành một DataFrame
+        # Concatenate all processed batches into a single DataFrame
         data_frame = cudf.concat(data_frames, ignore_index=True)
-        gc.collect()  # Thu hồi bộ nhớ không sử dụng
+
+        # Optimize specific column if it exists
+        if "filename_date" in data_frame.columns:
+            data_frame["filename_date"] = data_frame["filename_date"].astype("int32")
+
+        # Clean up unused objects to free memory
+        del batch_df, mapping_df
+        gc.collect()
+
         return data_frame
+
+    elif process_lib == "cudf":
+        # Load data using pandas first if optimization is not required
+        pdf = load_parquet_data(
+            file_paths=file_paths,
+            with_columns=with_columns,
+            process_lib="pandas",
+            filters=filters,
+            schema=schema,
+        )
+        return cudf.from_pandas(pdf)
+
+    else:
+        # Use Spark for processing if specified
+        return load_parquet_data_by_pyspark(
+            file_paths=file_paths,
+            with_columns=with_columns,
+            filters=filters,
+            spark=spark,
+            schema=schema,
+        )
+
+
+def process_partition_filters(filters, file_paths, partition_cols):
+    """
+    Process filters into partition and non-partition filters.
+
+    Args:
+        filters (list): List of filters to apply on data.
+        file_paths (list): List of paths to Parquet files.
+        partition_cols (set): Set of partition column names.
+
+    Returns:
+        tuple: Filtered file paths and a list of non-partition filters.
+    """
+    # Default filters to an empty list if not provided
+    filters = filters or []
+
+    # Separate filters into partition and non-partition filters
+    partition_filters = [f for f in filters if f[0] in partition_cols]
+    filtered_file_paths = (
+        filter_partitioned_files(str(file_paths), partition_filters, partition_cols)
+        if partition_filters
+        else file_paths
+    )
+    non_partition_filters = [f for f in filters if f[0] not in partition_cols]
+
+    return filtered_file_paths, non_partition_filters
+
+
+def get_batch_size_vram(max_batch):
+    """
+    Calculate the batch size based on available VRAM.
+
+    Args:
+        max_batch (int): Maximum batch size allowed.
+
+    Returns:
+        int: The calculated batch size.
+    """
+    # Estimate batch size based on free VRAM
+    return estimate_batch_size(get_free_vram(), max_batch=max_batch)
 
 
 def filters_by_expression_in_pyspark(df, filters):

@@ -210,12 +210,13 @@ class TestRecModel(CoreRecModel):
         self,
         infer_date: int,
         num_days_to_train: int,
-        config_path: str,
+        model_config_path: str,
         device_id: int,
         data_path: str,
+        config=None,
         cpu_process_lib: str = "pandas",
     ):
-        model_config = parse_pipeline_config(config_path)
+        model_config = parse_pipeline_config(model_config_path)
         super().__init__(
             infer_date=infer_date,
             num_days_to_train=num_days_to_train,
@@ -234,6 +235,7 @@ class TestRecModel(CoreRecModel):
                 process_lib: FromFileFeatureManager(
                     process_lib=process_lib,
                     dataset_path=self.data_path / "offline_features.parquet",
+                    config=config,
                 )
                 for process_lib in process_lib_list
             },

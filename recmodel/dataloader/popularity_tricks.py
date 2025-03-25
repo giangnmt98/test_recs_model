@@ -87,6 +87,16 @@ class ReSampleSolvePopularity:
                 df_n_np, allowMissingColumns=False
             )
         else:
+            self.popularity_sample_groups = [
+                df[self.popularity_item_group_col].dtype.type(x)
+                for x in self.popularity_sample_groups
+            ]
+
+            self.tail_sample_groups = [
+                df[self.popularity_item_group_col].dtype.type(x)
+                for x in self.tail_sample_groups
+            ]
+
             df_p = df[df[self.label_col] != 1][columns]
             df_n_p = df[
                 (df[self.label_col] == 1)
@@ -187,9 +197,26 @@ class ReSampleSolvePopularity:
                     df_pop_neg.select(columns), allowMissingColumns=False
                 )
         else:
+            # Convert values in popularity sample groups to
+            # the appropriate dtype of the column in the DataFrame
+
+            self.popularity_sample_groups = [
+                df[self.popularity_item_group_col].dtype.type(x)
+                for x in self.popularity_sample_groups
+            ]
+            # Convert values in tail sample groups to
+            # the appropriate dtype of the column in the DataFrame
+            self.tail_sample_groups = [
+                df[self.popularity_item_group_col].dtype.type(x)
+                for x in self.tail_sample_groups
+            ]
+
+            # Check if there are valid sampling fractions
+            # and if there are entries in df_pop_items
             if (sum(self.factor_popularity_sample_groups) > 1e-4) and len(
                 df_pop_items
             ) > 0:
+                # Filter active users (label == 2) and select relevant columns
                 df_active_users = (
                     df[df[self.label_col] == 2]
                     .loc[
@@ -203,6 +230,8 @@ class ReSampleSolvePopularity:
                     .drop_duplicates()
                 )
 
+                # Perform an inner join between df_pop_items
+                # and active users based on the time order column
                 df_pop_neg = self.gpu_loading.get_pd_or_cudf().merge(
                     df_pop_items,
                     df_active_users,
@@ -210,9 +239,11 @@ class ReSampleSolvePopularity:
                     how="inner",
                 )
 
+                # Exclude user-item pairs with labels other than 1 (negative samples)
                 df_nn = df[df[self.label_col] != 1][
                     [self.user_id_col, self.item_id_col]
                 ].drop_duplicates()
+                # Perform an anti-join to remove such pairs from df_pop_neg
                 df_pop_neg = anti_join(
                     df_pop_neg, df_nn, on_columns=[self.user_id_col, self.item_id_col]
                 )
@@ -220,6 +251,8 @@ class ReSampleSolvePopularity:
 
                 df_pop_neg_samples = []
 
+                # Iterate over the popularity sample groups
+                # and sample negative items based on the fractions
                 for i in range(len(self.popularity_sample_groups)):
                     frac = self.factor_popularity_sample_groups[i]
                     df_pop_neg_samples.append(
@@ -230,19 +263,26 @@ class ReSampleSolvePopularity:
                             )
                         ].sample(frac=frac)
                     )
+
+                # Concatenate the sampled negative items into a single DataFrame
                 df_pop_neg = self.gpu_loading.get_pd_or_cudf().concat(
                     df_pop_neg_samples, axis=0, ignore_index=True, sort=False
                 )
                 del df_pop_neg_samples
 
+                # Set the label and weight columns for the negative samples
                 df_pop_neg[self.label_col] = 1
                 df_pop_neg[self.weight_col] = 1.0
+                # Ensure that the label column dtype
+                # matches that of the original DataFrame
                 df_pop_neg[self.label_col] = df_pop_neg[self.label_col].astype(
                     df[self.label_col].dtype
                 )
 
+                # Select the required columns from the negative samples
                 df_pop_neg = df_pop_neg[columns]
 
+                # Concatenate the original DataFrame with the new negative samples
                 df = self.gpu_loading.get_pd_or_cudf().concat(
                     [df[columns], df_pop_neg], ignore_index=True, sort=False
                 )

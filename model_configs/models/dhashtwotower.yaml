@@ -31,9 +31,12 @@ data_loader:
     weight_col: weighted_lr
     batch_size: 100000
     shuffle: True
-    popularity_sample_groups: ["100", "101-300"]
-    factor_popularity_sample_groups: [0.0, 0.00]
-    tail_sample_groups: ["301-1000", "1001-2000", ">2000", "others"]
+#    popularity_sample_groups: ["100", "101-300"]
+#    factor_popularity_sample_groups: [0.0, 0.00]
+#    tail_sample_groups: ["301-1000", "1001-2000", ">2000", "others"]
+    popularity_sample_groups: [ 1, 2 ]
+    factor_popularity_sample_groups: [ 0.0, 0.00 ]
+    tail_sample_groups: [ 3, 4, 5, 0 ]
     factor_tail_sample_groups: [1, 1, 1, 1]
     debug: False
 

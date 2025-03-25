@@ -47,6 +47,7 @@ class PytorchDataLoader(BaseDataLoader):
             self.gpu_loading,
             self,
         )
+        self.factor_tail_sample_groups = params.factor_tail_sample_groups
 
     # def extract_external_dataframe(
     #     self, features_to_select: List[str] = [], is_user: bool = False
@@ -180,7 +181,6 @@ class PytorchDataLoader(BaseDataLoader):
                     df = df.drop_duplicates()
 
                 df = FeatureAssembly().add_context_feature(big_df)
-
                 if not is_train:
                     df = drop_train_pairs(
                         df,
@@ -286,6 +286,12 @@ class PytorchDataLoader(BaseDataLoader):
                     .drop_duplicates()
                     .reset_index(drop=True)
                 )
+                # Ensure the values in `self.popularity_sample_groups`
+                # match the data type of the `self.popularity_item_group_col` column
+                self.popularity_sample_groups = [
+                    df_pop_items[self.popularity_item_group_col].dtype.type(x)
+                    for x in self.popularity_sample_groups
+                ]
                 df_pop_items = (
                     df_pop_items[
                         df_pop_items[self.popularity_item_group_col].isin(
@@ -490,13 +496,11 @@ class PytorchDataLoader(BaseDataLoader):
 
         else:
             assert isinstance(df, self.gpu_loading.get_pd_or_cudf().DataFrame)
-
             if self.time_order_event_col not in df.columns:
                 # just assign a date
                 df[self.time_order_event_col] = 20230101
 
             assert isinstance(features_order, list)
-
             df_p = df[df[self.label_col] == 2]
             df_pn = df[df[self.label_col] == 0]
             df_n = df[df[self.label_col] == 1]
@@ -515,6 +519,7 @@ class PytorchDataLoader(BaseDataLoader):
             df_n = anti_join(
                 df_n, df_remove, on_columns=[self.user_id_col, self.item_id_col]
             )
+
             df = self.gpu_loading.get_pd_or_cudf().concat(
                 [df_p, df_n], ignore_index=True
             )
@@ -525,11 +530,16 @@ class PytorchDataLoader(BaseDataLoader):
                 + [self.label_col, self.weight_col, self.time_order_event_col]
             )
 
-            df = self.pop_resample.downnegative_sample(df, columns)
+            # If any group in factor_tail_sample_groups is not equal to 1,
+            # perform negative sampling
+            if any(group != 1 for group in self.factor_tail_sample_groups):
+                # Perform down-sampling of negative samples
+                df = self.pop_resample.downnegative_sample(df, columns)
 
-            df = self.pop_resample.upnegative_sample(
-                df, columns, df_pop_items, is_train, part_idx=part_idx
-            )
+                # Perform up-sampling of negative samples with provided parameters
+                df = self.pop_resample.upnegative_sample(
+                    df, columns, df_pop_items, is_train, part_idx=part_idx
+                )
 
             # shuffle all df
             df = df[columns]
@@ -645,7 +655,6 @@ class PytorchDataLoader(BaseDataLoader):
             pred_tensor = torch.from_dlpack(df.to_dlpack())
         else:
             pred_tensor = torch.tensor(df.values, device="cpu")
-        # print(pred_tensor.get_device())
         return pred_tensor
 
     def get_train_ds(

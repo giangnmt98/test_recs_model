@@ -19,12 +19,13 @@ class BaseFeatureManager(ABC):
 
 
 class FromFileFeatureManager(BaseFeatureManager):
-    def __init__(self, process_lib, dataset_path):
+    def __init__(self, process_lib, dataset_path, config):
         super().__init__(process_lib)
         self.dataset_path = dataset_path
         self.spark_operation = SparkOperations()
         self._spark = None
         self.get_spark_session()
+        self.config = config
 
     def get_spark_session(self):
         """Return spark session if exists else init one"""
@@ -43,7 +44,7 @@ class FromFileFeatureManager(BaseFeatureManager):
             with_columns=features_to_select,
             filters=query_to_filter,
             process_lib=self.process_lib,
-            spark=self._spark,
+            config=self.config,
         )
 
 

@@ -36,7 +36,7 @@ class TestDailyPipeline:
             test_rec_model = TestRecModel(
                 infer_date=infer_date,
                 num_days_to_train=90,
-                config_path=f"model_configs/models/{model_name}.yaml",
+                model_config_path=f"model_configs/models/{model_name}.yaml",
                 device_id=-1,
                 data_path="data/features",
                 cpu_process_lib="pandas",

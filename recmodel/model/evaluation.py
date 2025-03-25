@@ -95,8 +95,12 @@ class Evaluation:
             user_feature_df = user_feature_df.withColumnRenamed("key0", self.user_id)
             item_feature_df = item_feature_df.withColumnRenamed("key0", self.item_id)
         else:
-            user_feature_df = load_parquet_data(user_path, process_lib=self.process_lib)
-            item_feature_df = load_parquet_data(item_path, process_lib=self.process_lib)
+            user_feature_df = load_parquet_data(
+                user_path, process_lib=self.process_lib, should_optimize=False
+            )
+            item_feature_df = load_parquet_data(
+                item_path, process_lib=self.process_lib, should_optimize=False
+            )
             user_feature_df = user_feature_df.rename(columns={"key0": self.user_id})
             item_feature_df = item_feature_df.rename(columns={"key0": self.item_id})
         return user_feature_df, item_feature_df

@@ -1,18 +1,42 @@
-infer_date: 20230430
-model_name: "dhashdlrm"
-num_days_to_train: 90
-data_path: "/home/giang/VNPTAI/feature_store/data/processed/preprocessed_features/features"
+infer_date: 20230430 # Date for inference in YYYYMMDD format
+model_name: "dhashdlrm" # Name of the machine learning model
+num_days_to_train: 90 # Number of days of data used for training
+data_path: "/home/giang/VNPTAI/feature_store/data/processed/preprocessed_features/features" # Path to the preprocessed features data
 # using pyspark must set IS_USE_MEMORY_CACHE to False
-cpu_process_lib: "pandas"
-model_config_path: "model_configs/models/"
-use_mlflow_tracking_server: False
+cpu_process_lib: "pandas" # Library used for processing data on CPU
+model_config_path: "model_configs/models/" # Path to the directory containing model configuration files
+use_mlflow_tracking_server: False # Flag indicating whether to use MLflow for experiment tracking
 
+max_batch_size_data_loader: 1000 # Maximum batch size for the data loader
 
-#infer_date: 20250207
-#model_name: "dhashdlrm"
-#num_days_to_train: 90
-#data_path: "/home/cuongit/BIGDATA/mytv_pipeline_data/data_product_with_processed_for_qa/processed/preprocessed_features/features_old/features"
-## using pyspark must set IS_USE_MEMORY_CACHE to False
-#cpu_process_lib: "pandas"
-#model_config_path: "model_configs/models/"
-#use_mlflow_tracking_server: False
+popularity_item_group_mapping: # Mapping for item group popularity ranges
+  "others": "0"
+  "100": "1"
+  "101-300": "2"
+  "301-1000": "3"
+  "1001-2000": "4"
+  ">2000": "5"
+
+partition_columns: # Columns used for partitioning data
+  - filename_date
+  - is_interacted
+
+optimize_type: # Data type optimizations for efficiency
+  batch_idx: int8
+  duration: int32
+  encoded_age_group: int8
+  encoded_content_country: int8
+  encoded_content_type: int8
+  encoded_prefer_movie_type: int8
+  encoded_prefer_vod_type: int8
+  encoded_user_package_code: int8
+  encoded_user_province: int8
+  hashed_content_category: int16
+  hashed_item_id: int32
+  hashed_item_id_v2: int32
+  hashed_user_id: int32
+  hashed_user_id_v2: int32
+  is_interacted: int8
+  is_weekend: int8
+  popularity_item_group: int8
+  weighted_lr: float32
