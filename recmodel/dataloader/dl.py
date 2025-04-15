@@ -49,49 +49,6 @@ class PytorchDataLoader(BaseDataLoader):
         )
         self.factor_tail_sample_groups = params.factor_tail_sample_groups
 
-    # def extract_external_dataframe(
-    #     self, features_to_select: List[str] = [], is_user: bool = False
-    # ):
-    #     if is_user:
-    #         features_to_select = [self.user_id_col] + features_to_select
-    #         df = self.user_feature_manager.extract_dataframe(
-    #             features_to_select=features_to_select
-    #         )
-    #         if self.process_lib == "pyspark":
-    #             df = self.spark_operation.toPandas(df)
-    #         if self.gpu_loading.is_gpu_available():
-    #             df = self.gpu_loading.get_pd_or_cudf().from_pandas(df)
-    #
-    #     else:
-    #         features_to_select = [self.item_id_col] + features_to_select
-    #         df = self.item_feature_manager.extract_dataframe(
-    #             features_to_select=features_to_select,
-    #             filters=self.params.content_filters,
-    #         )
-    #         if self.process_lib == "pyspark":
-    #             df = self.spark_operation.toPandas(df)
-    #         if self.gpu_loading.is_gpu_available():
-    #             df = self.gpu_loading.get_pd_or_cudf().from_pandas(df)
-    #     return df
-    #
-    # def include_external_features(
-    #     self,
-    #     df: pd.DataFrame,
-    #     external_user_features: List[str] = [],
-    #     external_item_features: List[str] = [],
-    # ):
-    #     if len(external_user_features) > 0:
-    #         external_user_features_df = self.extract_external_dataframe(
-    #             features_to_select=external_user_features, is_user=True
-    #         )
-    #         df = df.merge(external_user_features_df, how="left", on=self.user_id_col)
-    #     if len(external_item_features) > 0:
-    #         external_item_features_df = self.extract_external_dataframe(
-    #             features_to_select=external_item_features
-    #         )
-    #         df = df.merge(external_item_features_df, how="left", on=self.item_id_col)
-    #     return df
-
     def extract_main_dataframe(
         self,
         filters: List[str],

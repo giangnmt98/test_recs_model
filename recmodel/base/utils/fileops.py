@@ -137,7 +137,6 @@ def load_parquet_data(
         batch_size = get_batch_size_vram(config["max_batch_size_data_loader"])
 
         # Get column mapping for label encoding
-        mapping_df = get_mapping_from_config(config, "popularity_item_group")
         data_frames = []
 
         # Process data in batches to optimize memory usage
@@ -154,11 +153,8 @@ def load_parquet_data(
                 filters=non_partition_filters,
             )
 
-            # Optimize data types and apply label encoding
-            batch_df = optimize_dataframe_types(
-                apply_label_encoding_cudf(batch_df, mapping_df), config
-            )
-
+            # Optimize data types
+            batch_df = optimize_dataframe_types(batch_df, config)
             # Round float columns to reduce unnecessary precision
             for col in batch_df.columns:
                 if batch_df[col].dtype.kind == "f":  # Float column
@@ -168,13 +164,13 @@ def load_parquet_data(
 
         # Concatenate all processed batches into a single DataFrame
         data_frame = cudf.concat(data_frames, ignore_index=True)
-
         # Optimize specific column if it exists
         if "filename_date" in data_frame.columns:
             data_frame["filename_date"] = data_frame["filename_date"].astype("int32")
 
         # Clean up unused objects to free memory
-        del batch_df, mapping_df
+        # del batch_df, mapping_df
+        del batch_df
         gc.collect()
 
         return data_frame

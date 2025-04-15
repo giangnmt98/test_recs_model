@@ -1,21 +1,13 @@
 infer_date: 20230430 # Date for inference in YYYYMMDD format
 model_name: "dhashdlrm" # Name of the machine learning model
 num_days_to_train: 90 # Number of days of data used for training
-data_path: "/home/giang/VNPTAI/feature_store/data/processed/preprocessed_features/features" # Path to the preprocessed features data
+data_path: "/home/giang/VNPTAI/feature_store/data2/processed/preprocessed_features/features" # Path to the preprocessed features data
 # using pyspark must set IS_USE_MEMORY_CACHE to False
 cpu_process_lib: "pandas" # Library used for processing data on CPU
 model_config_path: "model_configs/models/" # Path to the directory containing model configuration files
 use_mlflow_tracking_server: False # Flag indicating whether to use MLflow for experiment tracking
 
 max_batch_size_data_loader: 1000 # Maximum batch size for the data loader
-
-popularity_item_group_mapping: # Mapping for item group popularity ranges
-  "others": "0"
-  "100": "1"
-  "101-300": "2"
-  "301-1000": "3"
-  "1001-2000": "4"
-  ">2000": "5"
 
 partition_columns: # Columns used for partitioning data
   - filename_date
